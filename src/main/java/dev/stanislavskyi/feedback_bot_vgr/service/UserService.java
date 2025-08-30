@@ -3,6 +3,7 @@ package dev.stanislavskyi.feedback_bot_vgr.service;
 import dev.stanislavskyi.feedback_bot_vgr.dto.request.RegisterRequest;
 import dev.stanislavskyi.feedback_bot_vgr.dto.response.UserResponse;
 import dev.stanislavskyi.feedback_bot_vgr.exception.UserAlreadyExistsException;
+import dev.stanislavskyi.feedback_bot_vgr.mapper.UserMapper;
 import dev.stanislavskyi.feedback_bot_vgr.model.User;
 import dev.stanislavskyi.feedback_bot_vgr.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
     private static final Logger log = LoggerFactory.getLogger(UserService.class);
 
 
@@ -28,17 +30,13 @@ public class UserService {
                 }
         );
 
-        User user = new User();
-        user.setRoleUser(request.getRoleUser());
-        user.setAutoServiceBranch(request.getAutoServiceBranch());
-        user.setTelegramId(request.getTelegramId());
+        User user = userMapper.fromRegisterRequest(request);
+        User savedUser = userRepository.save(user);
 
-        UserResponse userResponse = new UserResponse();
-        userResponse.setRoleUser(user.getRoleUser());
-        user.setAutoServiceBranch(request.getAutoServiceBranch());
-        user.setTelegramId(request.getTelegramId());
+        log.info("Created user: id={}, telegramId={}", savedUser.getId(), savedUser.getTelegramId());
 
-        log.info("Created user: id={}, telegramId={}", userResponse.getId(), userResponse.getTelegramId());
+
+        UserResponse userResponse = userMapper.toResponse(savedUser);
 
         return userResponse;
     }
