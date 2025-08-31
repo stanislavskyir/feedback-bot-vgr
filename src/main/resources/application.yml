@@ -12,3 +12,28 @@ spring:
 
 server:
   port: 8081
+
+telegram:
+  bot:
+    username: ${TELEGRAM_BOT_USERNAME}
+    token: ${TELEGRAM_BOT_TOKEN}
+
+app:
+  branches:
+    kyiv_beresteiska: "Київ (Берестейська) – вул. Волноваська, 4"
+    svyatopetrivske: "с. Святопетрівське – вул. Юнацька, 1"
+    kharkiv: "Харків – вул. Академіка Павлова, 120/6"
+    ivano_frankivsk: "Івано-Франківськ – с. Угринів, вул. Галицька 22"
+    warsaw: "Польща – Варшава, ul. Brzeziny 8D"
+    kyiv_left: "Київ (Лівий Берег) – вул. Гродненська 32А"
+    odesa: "Одеса – вул. Балківська 120а"
+    zaporizhzhia: "Запоріжжя – вул. Брянська, 6"
+    uzhhorod: "Ужгород – вул. Андрія Палая, 1"
+    kyiv_pochaina: "Київ (Почайна) – проспект Степана Бандери 21"
+    dnipro: "Дніпро – вул. Дніпросталівська, 5"
+    lviv_pasicna: "Львів – вул. Пасічна, 127"
+    khmelnytskyi: "Хмельницький – вул. Трудова 4"
+    kyiv_golosievo: "Київ (Голосієво) – вул. Голосіївська, 9"
+    ternopil: "Тернопіль – Цегельний провулок, 1"
+    lviv_tkatska: "Львів – вул. Ткацька 31"
+    vinnytsia: "Вінниця – вул. Симона Петлюри, 26"
