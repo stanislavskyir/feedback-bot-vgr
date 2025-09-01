@@ -40,5 +40,4 @@ public class GeminiService {
 
         return response;
     }
-
 }

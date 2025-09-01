@@ -3,12 +3,17 @@ package dev.stanislavskyi.feedback_bot_vgr.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.stanislavskyi.feedback_bot_vgr.dto.request.FeedbackRequest;
-import dev.stanislavskyi.feedback_bot_vgr.dto.response.ReviewAnalysisResponse;
+import dev.stanislavskyi.feedback_bot_vgr.dto.response.FeedbackAnalysisResponse;
 import dev.stanislavskyi.feedback_bot_vgr.gemini_ai_api.service.GeminiService;
+import dev.stanislavskyi.feedback_bot_vgr.google_docs.service.GoogleDocsService;
+import dev.stanislavskyi.feedback_bot_vgr.mapper.FeedbackMapper;
+import dev.stanislavskyi.feedback_bot_vgr.model.Feedback;
+import dev.stanislavskyi.feedback_bot_vgr.repository.FeedbackRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -19,19 +24,64 @@ public class FeedbackService {
 
     private static final Logger log = LoggerFactory.getLogger(FeedbackService.class);
     private final GeminiService geminiService;
+    private final GoogleDocsService googleDocsService;
+    private final FeedbackRepository feedbackRepository;
 
-    public ReviewAnalysisResponse analyzeReview(FeedbackRequest review) {
+    private final FeedbackMapper feedbackMapper;
+
+    @Value("${app.google-docs.document-id}")
+    private String DOCUMENT_ID;
+
+    public FeedbackAnalysisResponse analyzeReview(FeedbackRequest review) {
         String prompt = createPromptForReview(review);
         String aiResponse = geminiService.getAnswer(prompt);
         log.info("RESPONSE FROM AI: {} ", aiResponse);
 
-        ReviewAnalysisResponse analysis = processAiResponse(review, aiResponse);
-        logReviewAnalysis(analysis);
+        FeedbackAnalysisResponse analysis = processAiResponse(review, aiResponse);
+
+        try {
+            saveFeedbackToDb(review, analysis);
+            String textToSave = formatForGoogleDocs(analysis);
+            googleDocsService.appendText(DOCUMENT_ID, textToSave);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return analysis;
     }
 
-    private ReviewAnalysisResponse processAiResponse(FeedbackRequest feedbackRequest, String aiResponse) {
+    private void saveFeedbackToDb(FeedbackRequest review, FeedbackAnalysisResponse analysis) {
+        try {
+            Feedback feedback = feedbackMapper.toEntity(analysis);
+            feedback.setFeedbackText(review.getFeedbackText());
+
+            feedbackRepository.save(feedback);
+        } catch (Exception e) {
+            log.error("Failed to save feedback to DB", e);
+        }
+    }
+
+    private String formatForGoogleDocs(FeedbackAnalysisResponse analysis) {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("          АНАЛІЗ ВІДГУКУ           \n");
+        sb.append("══════════════════════════════════\n");
+        sb.append("📌 Роль користувача: ").append(analysis.getRoleUser()).append("\n");
+        sb.append("🏢 Відділення СТО: ").append(analysis.getAutoServiceBranch()).append("\n");
+        sb.append("😐 Настрій: ").append(analysis.getSentiment()).append("\n");
+        sb.append("⚠️ Критичність: ").append(analysis.getCriticality()).append("\n");
+        sb.append("📝 Рекомендації:\n");
+
+        for (String step : analysis.getResolution()) {
+            sb.append("   - ").append(step).append("\n");
+        }
+
+        sb.append("📅 Дата створення: ").append(analysis.getCreatedAt()).append("\n");
+        return sb.toString();
+    }
+
+    private FeedbackAnalysisResponse processAiResponse(FeedbackRequest feedbackRequest, String aiResponse) {
         try {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode rootNode = mapper.readTree(aiResponse);
@@ -55,7 +105,7 @@ public class FeedbackService {
             JsonNode criticalityNode = parsedNode.path("criticality");
             JsonNode resolutionNode = parsedNode.path("resolution");
 
-            return ReviewAnalysisResponse.builder()
+            return FeedbackAnalysisResponse.builder()
                     .roleUser(feedbackRequest.getRoleUser())
                     .autoServiceBranch(feedbackRequest.getAutoServiceBranch())
                     .sentiment(sentimentNode.asText("unknown"))
@@ -72,8 +122,8 @@ public class FeedbackService {
         }
     }
 
-    private ReviewAnalysisResponse createDefaultAnalysis(FeedbackRequest feedbackRequest) {
-        return ReviewAnalysisResponse.builder()
+    private FeedbackAnalysisResponse createDefaultAnalysis(FeedbackRequest feedbackRequest) {
+        return FeedbackAnalysisResponse.builder()
                 .roleUser(feedbackRequest.getRoleUser())
                 .autoServiceBranch(feedbackRequest.getAutoServiceBranch())
                 .sentiment("neutral")
@@ -108,22 +158,4 @@ public class FeedbackService {
                 Make sure the resolution steps are actions that the employer or management should take, not the employee.
                 """, feedbackRequest.getFeedbackText());
     }
-
-    private void logReviewAnalysis(ReviewAnalysisResponse analysis) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("\n--- Review Analysis ---\n");
-        sb.append("Role User: ").append(analysis.getRoleUser()).append("\n");
-        sb.append("Auto Service Branch: ").append(analysis.getAutoServiceBranch()).append("\n");
-        sb.append("Sentiment: ").append(analysis.getSentiment()).append("\n");
-        sb.append("Criticality: ").append(analysis.getCriticality()).append("\n");
-        sb.append("Resolution:\n");
-        for (String step : analysis.getResolution()) {
-            sb.append("  - ").append(step).append("\n");
-        }
-        sb.append("Created At: ").append(analysis.getCreatedAt()).append("\n");
-        sb.append("-----------------------");
-
-        System.out.println(sb.toString());
-    }
-
 }

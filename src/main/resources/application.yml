@@ -45,9 +45,12 @@ app:
     ternopil: "Тернопіль – Цегельний провулок, 1"
     lviv_tkatska: "Львів – вул. Ткацька 31"
     vinnytsia: "Вінниця – вул. Симона Петлюри, 26"
-
+  google-docs:
+    document-id: ${GOOGLE_DOCS_ID}
 
 gemini:
   api:
     url: ${GEMINI_API_URL}
     key: ${GEMINI_API_KEY}
+
+

@@ -17,10 +17,10 @@ public class Feedback {
     private UUID id;
 
     @Enumerated(EnumType.STRING)
-    private RoleUser roleUser;
+    private RoleUser roleUser; //
 
     @Column(nullable = false)
-    private String autoServiceBranch;
+    private String autoServiceBranch; //
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String feedbackText;
@@ -29,13 +29,10 @@ public class Feedback {
     private SentimentType sentiment;
 
     @Column
-    private Integer criticalityLevel;
+    private Integer criticality;
 
     @Column(columnDefinition = "TEXT")
-    private String aiAnalysis;
-
-    @Column(columnDefinition = "TEXT")
-    private String suggestedSolution;
+    private String resolution;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
