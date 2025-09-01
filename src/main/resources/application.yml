@@ -21,11 +21,6 @@ spring:
 server:
   port: 8081
 
-telegram:
-  bot:
-    username: ${TELEGRAM_BOT_USERNAME}
-    token: ${TELEGRAM_BOT_TOKEN}
-
 app:
   branches:
     kyiv_beresteiska: "Київ (Берестейська) – вул. Волноваська, 4"
@@ -54,3 +49,12 @@ gemini:
     key: ${GEMINI_API_KEY}
 
 
+telegram:
+  bot:
+    username: ${TELEGRAM_BOT_USERNAME}
+    token: ${TELEGRAM_BOT_TOKEN}
+
+trello:
+  api:
+    key: ${TRELLO_API_KEY}
+    token: ${TRELLO_API_TOKEN}

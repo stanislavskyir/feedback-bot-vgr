@@ -9,6 +9,7 @@ import dev.stanislavskyi.feedback_bot_vgr.google_docs.service.GoogleDocsService;
 import dev.stanislavskyi.feedback_bot_vgr.mapper.FeedbackMapper;
 import dev.stanislavskyi.feedback_bot_vgr.model.Feedback;
 import dev.stanislavskyi.feedback_bot_vgr.repository.FeedbackRepository;
+import dev.stanislavskyi.feedback_bot_vgr.trello_api.service.TrelloService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +30,8 @@ public class FeedbackService {
 
     private final FeedbackMapper feedbackMapper;
 
+    private final TrelloService trelloService;
+
     @Value("${app.google-docs.document-id}")
     private String DOCUMENT_ID;
 
@@ -40,8 +43,19 @@ public class FeedbackService {
         FeedbackAnalysisResponse analysis = processAiResponse(review, aiResponse);
 
         try {
-            saveFeedbackToDb(review, analysis);
-            String textToSave = formatForGoogleDocs(analysis);
+            Feedback feedback = saveFeedbackToDb(review, analysis);
+
+            String textToSave = formatForDocs(analysis);
+
+            if(analysis.getCriticality() >= 4){
+                trelloService.createCard(review.getFeedbackText(), textToSave)//analysis.toString())
+                        .subscribe(
+                                cardId -> log.info("Trello card created: {}", cardId),
+                                error -> log.error("Failed to create Trello card", error)
+                        );
+            }
+
+
             googleDocsService.appendText(DOCUMENT_ID, textToSave);
 
         } catch (Exception e) {
@@ -51,18 +65,22 @@ public class FeedbackService {
         return analysis;
     }
 
-    private void saveFeedbackToDb(FeedbackRequest review, FeedbackAnalysisResponse analysis) {
+    private Feedback saveFeedbackToDb(FeedbackRequest review, FeedbackAnalysisResponse analysis) {
         try {
             Feedback feedback = feedbackMapper.toEntity(analysis);
             feedback.setFeedbackText(review.getFeedbackText());
 
-            feedbackRepository.save(feedback);
+            Feedback savedFeedback = feedbackRepository.save(feedback);
+
+            return savedFeedback;
+
         } catch (Exception e) {
             log.error("Failed to save feedback to DB", e);
+            throw new RuntimeException("Failed to save feedback", e);
         }
     }
 
-    private String formatForGoogleDocs(FeedbackAnalysisResponse analysis) {
+    private String formatForDocs(FeedbackAnalysisResponse analysis) {
         StringBuilder sb = new StringBuilder();
 
         sb.append("          АНАЛІЗ ВІДГУКУ           \n");
