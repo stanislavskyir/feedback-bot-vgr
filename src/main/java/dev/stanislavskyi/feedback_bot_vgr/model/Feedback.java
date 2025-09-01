@@ -8,16 +8,13 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "users")
+@Table(name = "feedbacks")
 @Data
-public class User {
+public class Feedback {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-
-    @Column(nullable = false, unique = true)
-    private String telegramId;
 
     @Enumerated(EnumType.STRING)
     private RoleUser roleUser;
@@ -25,6 +22,22 @@ public class User {
     @Column(nullable = false)
     private String autoServiceBranch;
 
+    @Column(nullable = false, columnDefinition = "TEXT")
+    private String feedbackText;
+
+    @Enumerated(EnumType.STRING)
+    private SentimentType sentiment;
+
+    @Column
+    private Integer criticalityLevel;
+
+    @Column(columnDefinition = "TEXT")
+    private String aiAnalysis;
+
+    @Column(columnDefinition = "TEXT")
+    private String suggestedSolution;
+
     @CreationTimestamp
     private LocalDateTime createdAt;
+
 }

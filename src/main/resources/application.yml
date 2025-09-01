@@ -9,7 +9,15 @@ spring:
     hibernate:
       ddl-auto: create
     database-platform: org.hibernate.dialect.PostgreSQLDialect
-
+  output:
+    ansi:
+      enabled: always
+  jackson:
+    default-property-inclusion: non_null
+    property-naming-strategy: SNAKE_CASE
+  logging:
+    console:
+      encoding: UTF-8
 server:
   port: 8081
 
@@ -37,3 +45,9 @@ app:
     ternopil: "Тернопіль – Цегельний провулок, 1"
     lviv_tkatska: "Львів – вул. Ткацька 31"
     vinnytsia: "Вінниця – вул. Симона Петлюри, 26"
+
+
+gemini:
+  api:
+    url: ${GEMINI_API_URL}
+    key: ${GEMINI_API_KEY}

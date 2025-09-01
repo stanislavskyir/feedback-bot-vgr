@@ -1,5 +1,8 @@
 package dev.stanislavskyi.feedback_bot_vgr.telegram;
 
+import dev.stanislavskyi.feedback_bot_vgr.dto.request.FeedbackRequest;
+import dev.stanislavskyi.feedback_bot_vgr.model.RoleUser;
+import dev.stanislavskyi.feedback_bot_vgr.service.FeedbackService;
 import dev.stanislavskyi.feedback_bot_vgr.telegram.config.BranchConfig;
 import dev.stanislavskyi.feedback_bot_vgr.telegram.state.UserSession;
 import dev.stanislavskyi.feedback_bot_vgr.telegram.state.UserState;
@@ -26,13 +29,14 @@ public class UpdateConsumer implements LongPollingSingleThreadUpdateConsumer {
 
     private final TelegramClient telegramClient;
     private final BranchConfig branchConfig;
+    private final FeedbackService feedbackService;
 
     private final Map<Long, UserSession> userSessions = new ConcurrentHashMap<>();
 
-    public UpdateConsumer(TelegramClient telegramClient, BranchConfig branchConfig) {
+    public UpdateConsumer(TelegramClient telegramClient, BranchConfig branchConfig, FeedbackService feedbackService) {
         this.telegramClient = telegramClient;
         this.branchConfig = branchConfig;
-
+        this.feedbackService = feedbackService;
     }
 
     @SneakyThrows
@@ -182,10 +186,28 @@ public class UpdateConsumer implements LongPollingSingleThreadUpdateConsumer {
 
     private void handleFeedback(Long chatId, String feedbackText) throws Exception {
         UserSession session = userSessions.get(chatId);
+
+
+        RoleTelegramUser telegramRole = RoleTelegramUser.fromString(session.getSelectedRole());
+
+        RoleUser roleUser = switch (telegramRole) {
+            case MECHANIC -> RoleUser.MECHANIC;
+            case ELECTRICIAN -> RoleUser.ELECTRICIAN;
+            case MANAGER -> RoleUser.MANAGER;
+        };
+
+        FeedbackRequest request = new FeedbackRequest();
+        request.setRoleUser(roleUser);
+        request.setAutoServiceBranch(session.getSelectedAutoServiceBranch());
+        request.setFeedbackText(feedbackText);
+
+        feedbackService.analyzeReview(request);
+
         SendMessage response = SendMessage.builder()
                 .chatId(chatId)
                 .text("📝 Дякуємо за ваш відгук! Він буде розглянутий та проаналізований")
                 .build();
+
 
         telegramClient.execute(response);
         session.setCompleted(true);
