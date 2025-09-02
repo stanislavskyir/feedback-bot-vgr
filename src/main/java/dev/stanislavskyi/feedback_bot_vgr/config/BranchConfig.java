@@ -1,4 +1,4 @@
-package dev.stanislavskyi.feedback_bot_vgr.telegram.config;
+package dev.stanislavskyi.feedback_bot_vgr.config;
 
 import lombok.Getter;
 import lombok.Setter;

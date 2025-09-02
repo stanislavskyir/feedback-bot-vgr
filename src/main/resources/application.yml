@@ -18,6 +18,11 @@ spring:
   logging:
     console:
       encoding: UTF-8
+
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    mode: HTML
 server:
   port: 8081
 
@@ -40,8 +45,11 @@ app:
     ternopil: "Тернопіль – Цегельний провулок, 1"
     lviv_tkatska: "Львів – вул. Ткацька 31"
     vinnytsia: "Вінниця – вул. Симона Петлюри, 26"
+
   google-docs:
     document-id: ${GOOGLE_DOCS_ID}
+
+
 
 gemini:
   api:

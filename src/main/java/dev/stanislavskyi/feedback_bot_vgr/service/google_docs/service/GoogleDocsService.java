@@ -1,4 +1,4 @@
-package dev.stanislavskyi.feedback_bot_vgr.google_docs.service;
+package dev.stanislavskyi.feedback_bot_vgr.service.google_docs.service;
 
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;

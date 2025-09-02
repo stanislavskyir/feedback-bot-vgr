@@ -17,10 +17,10 @@ public class Feedback {
     private UUID id;
 
     @Enumerated(EnumType.STRING)
-    private RoleUser roleUser; //
+    private RoleUser roleUser;
 
     @Column(nullable = false)
-    private String autoServiceBranch; //
+    private String autoServiceBranch;
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String feedbackText;

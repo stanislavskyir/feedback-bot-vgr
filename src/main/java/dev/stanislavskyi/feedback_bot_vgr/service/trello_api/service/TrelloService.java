@@ -1,4 +1,4 @@
-package dev.stanislavskyi.feedback_bot_vgr.trello_api.service;
+package dev.stanislavskyi.feedback_bot_vgr.service.trello_api.service;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
