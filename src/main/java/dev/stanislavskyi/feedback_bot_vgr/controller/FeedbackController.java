@@ -4,6 +4,8 @@ import dev.stanislavskyi.feedback_bot_vgr.config.BranchConfig;
 import dev.stanislavskyi.feedback_bot_vgr.model.Feedback;
 import dev.stanislavskyi.feedback_bot_vgr.model.RoleUser;
 import dev.stanislavskyi.feedback_bot_vgr.service.FeedbackStorageService;
+import dev.stanislavskyi.feedback_bot_vgr.utils.ApiEndpoints;
+import dev.stanislavskyi.feedback_bot_vgr.utils.UiPaths;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 
 @Controller
-@RequestMapping("/admin/feedbacks")
+@RequestMapping(ApiEndpoints.API_V1_ADMIN_FEEDBACKS)
 @RequiredArgsConstructor
 public class FeedbackController {
 
@@ -39,7 +41,7 @@ public class FeedbackController {
         model.addAttribute("selectedBranch", autoServiceBranch);
         model.addAttribute("selectedCriticality", criticality);
 
-        return "feedbacks";
+        return UiPaths.FEEDBACKS;
     }
 
 

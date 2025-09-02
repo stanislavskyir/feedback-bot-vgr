@@ -55,7 +55,6 @@ public class UpdateConsumer implements LongPollingSingleThreadUpdateConsumer {
         Long chatId = update.getMessage().getChatId();
 
         UserSession session = userSessions.computeIfAbsent(chatId, k -> new UserSession());
-        //if (session.isCompleted()) return;
 
         if (messageText.equals("/start")) {
             session.setState(UserState.SELECTING_ROLE);
@@ -210,6 +209,5 @@ public class UpdateConsumer implements LongPollingSingleThreadUpdateConsumer {
 
 
         telegramClient.execute(response);
-        //session.setCompleted(true);
     }
 }

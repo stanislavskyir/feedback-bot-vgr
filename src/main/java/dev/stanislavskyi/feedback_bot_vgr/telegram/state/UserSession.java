@@ -11,8 +11,6 @@ public class UserSession {
     private String selectedRole;
     private String selectedAutoServiceBranch;
 
-    //private boolean completed;
-
     public UserSession() {
         this.state = UserState.NEW_USER;
     }
