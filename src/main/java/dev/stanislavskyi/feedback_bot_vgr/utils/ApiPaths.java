@@ -4,9 +4,11 @@ public final class ApiPaths {
 
     private static final String API = "/api";
     private static final String V1 = "/v1";
-    private static final String USERS = "/users";
 
-    public static final String API_V1_USERS = API + V1 + USERS;
+    private static final String ADMIN = "/admin";
+    private static final String FEEDBACKS = "/feedbacks";
+
+    public static final String API_V1_ADMIN_FEEDBACKS = API + V1 + ADMIN + FEEDBACKS;
 
     private ApiPaths() {}
 }

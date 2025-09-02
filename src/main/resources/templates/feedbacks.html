@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Feedbacks Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div class="container mt-4">
+    <h2 class="mb-4">Отзывы сотрудников</h2>
+
+    <form th:action="@{/admin/feedbacks}" method="get" class="row g-3 mb-4">
+        <div class="col-md-3">
+            <select name="autoServiceBranch" class="form-select">
+                <option value="">Все филиалы</option>
+                <option th:each="entry : ${branches}"
+                        th:value="${entry.key}"
+                        th:text="${entry.value}"
+                        th:selected="${entry.key == selectedBranch}">
+                </option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <select name="roleUser" class="form-select">
+                <option value="">Все должности</option>
+                <option th:each="role : ${roles}"
+                        th:value="${role}"
+                        th:text="${#strings.capitalize(role.toString().toLowerCase())}"
+                        th:selected="${role == selectedRoleUser}">
+                </option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <select name="criticality" class="form-select">
+                <option value="">Любая критичность</option>
+                <option th:each="c : ${criticalities}"
+                        th:value="${c}"
+                        th:text="${c}"
+                        th:selected="${c == selectedCriticality}">
+                </option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <button type="submit" class="btn btn-primary w-100">Применить фильтр</button>
+        </div>
+    </form>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered align-middle">
+            <thead class="table-dark">
+            <tr>
+                <th>Филия</th>
+                <th>Должность</th>
+                <th>Критичность</th>
+                <th>Отзыв</th>
+                <th>Дата</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${#lists.isEmpty(feedbacks)}">
+                <td colspan="5" class="text-center text-muted">Отзывов пока нет</td>
+            </tr>
+            <tr th:each="f : ${feedbacks}">
+                <td th:text="${f.autoServiceBranch}"></td>
+                <td th:text="${#strings.capitalize(f.roleUser.toString().toLowerCase())}"></td>
+                <td>
+                    <span th:text="${f.criticality}"
+                          th:classappend="${f.criticality == 5} ? 'badge bg-danger'
+                                         : (${f.criticality >= 3} ? 'badge bg-warning text-dark'
+                                         : 'badge bg-success')">
+                    </span>
+                </td>
+                <td th:text="${f.feedbackText}"></td>
+                <td th:text="${f.createdAt != null} ? ${#temporals.format(f.createdAt, 'dd.MM.yyyy HH:mm')} : '-'"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

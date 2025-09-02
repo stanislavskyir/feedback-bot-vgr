@@ -3,7 +3,7 @@ package dev.stanislavskyi.feedback_bot_vgr.telegram;
 import dev.stanislavskyi.feedback_bot_vgr.dto.request.FeedbackRequest;
 import dev.stanislavskyi.feedback_bot_vgr.model.RoleUser;
 import dev.stanislavskyi.feedback_bot_vgr.service.FeedbackService;
-import dev.stanislavskyi.feedback_bot_vgr.telegram.config.BranchConfig;
+import dev.stanislavskyi.feedback_bot_vgr.config.BranchConfig;
 import dev.stanislavskyi.feedback_bot_vgr.telegram.state.UserSession;
 import dev.stanislavskyi.feedback_bot_vgr.telegram.state.UserState;
 import lombok.SneakyThrows;
@@ -55,7 +55,7 @@ public class UpdateConsumer implements LongPollingSingleThreadUpdateConsumer {
         Long chatId = update.getMessage().getChatId();
 
         UserSession session = userSessions.computeIfAbsent(chatId, k -> new UserSession());
-        if (session.isCompleted()) return;
+        //if (session.isCompleted()) return;
 
         if (messageText.equals("/start")) {
             session.setState(UserState.SELECTING_ROLE);
@@ -201,7 +201,7 @@ public class UpdateConsumer implements LongPollingSingleThreadUpdateConsumer {
         request.setAutoServiceBranch(session.getSelectedAutoServiceBranch());
         request.setFeedbackText(feedbackText);
 
-        feedbackService.analyzeReview(request);
+        feedbackService.handleFeedback(request);
 
         SendMessage response = SendMessage.builder()
                 .chatId(chatId)
@@ -210,6 +210,6 @@ public class UpdateConsumer implements LongPollingSingleThreadUpdateConsumer {
 
 
         telegramClient.execute(response);
-        session.setCompleted(true);
+        //session.setCompleted(true);
     }
 }
