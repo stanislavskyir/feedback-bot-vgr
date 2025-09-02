@@ -1,10 +1,10 @@
-package dev.stanislavskyi.feedback_bot_vgr.service;
+package dev.stanislavskyi.feedback_bot_vgr.service.gemini_ai_api.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.stanislavskyi.feedback_bot_vgr.dto.request.FeedbackRequest;
 import dev.stanislavskyi.feedback_bot_vgr.dto.response.FeedbackAnalysisResponse;
-import dev.stanislavskyi.feedback_bot_vgr.service.gemini_ai_api.service.GeminiService;
+import dev.stanislavskyi.feedback_bot_vgr.service.FeedbackStorageService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +19,6 @@ public class FeedbackAnalysisService {
 
     private final GeminiService geminiService;
     private static final Logger log = LoggerFactory.getLogger(FeedbackAnalysisService.class);
-    private final FeedbackStorageService feedbackStorageService;
 
     public FeedbackAnalysisResponse analyzeReview(FeedbackRequest review) {
         String prompt = createPrompt(review);

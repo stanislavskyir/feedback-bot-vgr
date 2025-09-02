@@ -1,6 +1,6 @@
 package dev.stanislavskyi.feedback_bot_vgr.utils;
 
-public final class ApiPaths {
+public final class ApiEndpoints {
 
     private static final String API = "/api";
     private static final String V1 = "/v1";
@@ -10,5 +10,5 @@ public final class ApiPaths {
 
     public static final String API_V1_ADMIN_FEEDBACKS = API + V1 + ADMIN + FEEDBACKS;
 
-    private ApiPaths() {}
+    private ApiEndpoints() {}
 }

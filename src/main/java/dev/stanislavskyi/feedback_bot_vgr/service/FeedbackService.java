@@ -2,6 +2,7 @@ package dev.stanislavskyi.feedback_bot_vgr.service;
 
 import dev.stanislavskyi.feedback_bot_vgr.dto.request.FeedbackRequest;
 import dev.stanislavskyi.feedback_bot_vgr.dto.response.FeedbackAnalysisResponse;
+import dev.stanislavskyi.feedback_bot_vgr.service.gemini_ai_api.service.FeedbackAnalysisService;
 import dev.stanislavskyi.feedback_bot_vgr.service.google_docs.service.GoogleDocsService;
 import dev.stanislavskyi.feedback_bot_vgr.service.trello_api.service.TrelloService;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +16,7 @@ import org.springframework.stereotype.Service;
 public class FeedbackService {
 
     @Value("${app.google-docs.document-id}")
-    private String documentId;
+    private String DOCUMENT_ID;
 
     private static final Logger log = LoggerFactory.getLogger(FeedbackService.class);
 
@@ -36,7 +37,7 @@ public class FeedbackService {
 
         createTrelloCardIfCritical(request, analysis, textToSave);
 
-        googleDocsService.appendText(documentId, textToSave);
+        googleDocsService.appendText(DOCUMENT_ID, textToSave);
 
         return analysis;
     }

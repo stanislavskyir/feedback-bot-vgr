@@ -14,8 +14,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-//Отдельный сервис для сохранения и получения отзывов
-
 @Service
 @RequiredArgsConstructor
 public class FeedbackStorageService {
