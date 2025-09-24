@@ -37,23 +37,6 @@ README-інструкція щодо запуску:
 
 <img width="590" height="423" alt="image" src="https://github.com/user-attachments/assets/19602afe-aded-4d97-afc5-3886ffd29f92" />
 
-Для:
-
-DB_URL, де jdbc:postgresql://localhost:5432/feedback_bot_db
-DB_USERNAME, де postgres 
-DB_PASSWORD, де root (в залежностi вiд вашого паролю в Postgers)
-
-GOOGLE_DOCS_ID, де id номер вашого документу, в мене це https://docs.google.com/document/d/1jS6cWZG4ZQ7O3cvhHPzUfhARsrZncJ5ZJnALV978i-E/edit?tab=t.0   тобто 1jS6cWZG4ZQ7O3cvhHPzUfhARsrZncJ5ZJnALV978i-E
-GEMINI_API_URL  GEMINI_API_URL=https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key\=
-GEMINI_API_KEY   Тут потрiбно перейти по https://aistudio.google.com/apikey та получити свiй API KEY, або скористуватися моїм AIzaSyC5NNQ8Rn3ZWlQYeocKd_4P2Wz7NkHcOyc
-
-TELEGRAM_BOT_USERNAME, де vgr_anonym_feedback_bot
-TELEGRAM_BOT_TOKEN, де токен 8436225467:AAEhGRhjZH-k1lUfP_JBCfXdV8YmdzH-ioI
-
-TRELLO_API_KEY   тут перейти сюди https://trello.com/power-ups/68b5d7f13bd469f3a5b21899/edit/api-key та получити свiй api key
-TRELLO_API_TOKEN як отримати токен скрiн знизу
-
-
 
 <img width="1203" height="825" alt="image" src="https://github.com/user-attachments/assets/90d3b648-5361-408d-a4ed-e4999eadb04f" />
 
